@@ -209,24 +209,55 @@ redis数据库的每个键可以设置一个过期时间，键与过期时间的
 - ae.c(redis事件实现处理文件)
 - debug.c(调试工具函数)
 
+**9.1 创建与载入**
+
+- save命令阻塞服务器进程，直到RDB文件创建完毕为止，阻塞期间服务器不能处理任何命令请求。
+- bgsave派生出一个进程，然后又子进程负责创建RDB文件。
+- redis没有载入RDB文件的命令，当redis服务器重启时，如果检测到RDB文件的存在，它就会自动载入RDB文件。
+- 在bgsave执行期间，客户端发送的save命令会被服务器拒绝。
+- 在bgsave执行期间，客户端发送的bgsave命令会被服务器拒绝。
+- bgrewriteaof和bgsave两个命令不能同时进行。因为两个命令都会开辟一个子进程进行大量磁盘操作，严重影响性能。
+
+**9.2 RDB文件结构**
+
+**9.2.1 总体结构**<br/>
+| REDIS | db\_version | database | EOF | check\_sum |
+
+**9.2.2 database结构**<br/>
+| SELECTDB | db_number | key\_value\_pairs |
+
+**9.2.3 key\_value\_pairs结构**<br/>
+| TYPE | key | value |<br/>
+TYPE 类型如下:<br/>
+REDIS\_RDB\_TYPE\_STRING<br/>
+REDIS\_RDB\_TYPE\_LIST<br/>
+REDIS\_RDB\_TYPE\_SET<br/>
+REDIS\_RDB\_TYPE\_ZSET<br/>
+REDIS\_RDB\_TYPE\_HASH<br/>
+REDIS\_RDB\_TYPE\_LIST\_ZIPLIST<br/>
+REDIS\_RDB\_TYPE\_SET\_INTSET<br/>
+REDIS\_RDB\_TYPE\_ZSET\_ZIPLIST<br/>
+REDIS\_RDB\_TYPE\_HASH\_ZIPLIST<br/>
+
+带有过期时间的键的结构：<br/>
+| EXPIRETIME_MS | ms | TYPE | key | value |<br/>
+
+**9.2.4 value结构**<br/>
+字符串对象：<br/>
+| ENCODING | integer |<br/>
+| len | string |<br/>
+| REDIS_RDB_ENC_LZF | compressed_len | origin_len | compressed_string |<br/>
+
+列表对象：<br/>
+| list_length | item1 | item2 | ... | itemN |<br/>
+
+集合对象：<br/>
+| set_size | item1 | item2 | ... | itemN |<br/>
+
+哈希表对象：<br/>
+| hash_size | kv_pair 1 | kv_pair 2 | ... | kv_pair N |<br/>
+
+...
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**10. AOF持久化**
