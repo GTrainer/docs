@@ -240,22 +240,22 @@ REDIS\_RDB\_TYPE\_ZSET\_ZIPLIST<br/>
 REDIS\_RDB\_TYPE\_HASH\_ZIPLIST<br/>
 
 带有过期时间的键的结构：<br/>
-| EXPIRETIME\_MS | ms | TYPE | key | value |<br/>
+| EXPIRETIME_MS | ms | TYPE | key | value |<br/>
 
 **9.2.4 value结构**<br/>
 字符串对象：<br/>
 | ENCODING | integer |<br/>
 | len | string |<br/>
-| REDIS\_RDB\_ENC\_LZF | compressed\_len | origin\_len | compressed\_string |<br/>
+| REDIS_RDB_ENC_LZF | compressed_len | origin_len | compressed_string |<br/>
 
 列表对象：<br/>
-| list\_length | item1 | item2 | ... | itemN |<br/>
+| list_length | item1 | item2 | ... | itemN |<br/>
 
 集合对象：<br/>
-| set\_size | item1 | item2 | ... | itemN |<br/>
+| set_size | item1 | item2 | ... | itemN |<br/>
 
 哈希表对象：<br/>
-| hash\_size | kv\_pair 1 | kv\_pair 2 | ... | kv\_pair N |<br/>
+| hash_size | kv_pair 1 | kv_pair 2 | ... | kv_pair N |<br/>
 
 ...
 
